@@ -7,11 +7,19 @@ const auth = require("./../middleware/auth");
 router.get("/api/post/:date", auth, async (req, res) => {
     const postDate = req.params.date; 
 
-    if(postDate === undefined) throw new Error('Missing parameter `date`'); 
+    try {
 
-    const postDateSplit = req.params.date.split("-"); 
+        if(postDate === undefined) throw new Error('Missing parameter `date`'); 
 
-    if(postDateSplit.length !== 3) throw new Error('`Incorrect date format `date`: ' + postDate); 
+        const postDateSplit = req.params.date.split("-"); 
+
+        if(postDateSplit.length !== 3) throw new Error('`Incorrect date format `date`: ' + postDate); 
+
+    } catch(e) {
+        res.status(500).send({
+            error: "Parameter 'date' must be provided on the format yyyy-mm-dd" 
+        }); 
+    }
 
     const post = await Post.findOne({ postDate, isActive: true });
     if(post) {
