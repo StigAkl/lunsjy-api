@@ -9,14 +9,13 @@ router.get("/api/post/:date", auth, async (req, res) => {
 
     try {
 
-        if(postDate === undefined) throw new Error('Missing parameter `date`'); 
+        if(postDate === undefined || !isValidDate(postDate)) throw new Error('Missing parameter `date`'); 
 
         const postDateSplit = req.params.date.split("-"); 
-
         if(postDateSplit.length !== 3) throw new Error('`Incorrect date format `date`: ' + postDate); 
 
     } catch(e) {
-        res.status(500).send({
+        return res.status(500).send({
             error: "Parameter 'date' must be provided on the format yyyy-mm-dd" 
         }); 
     }
