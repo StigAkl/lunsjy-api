@@ -1,24 +1,54 @@
 const express = require("express"); 
 let Post = require("./../entities/Post"); 
 const router = express.Router(); 
+const auth = require("./../middleware/auth"); 
 
-router.get("/post/:date", async (req, res) => {
 
-    const date = req.params.date; 
+router.get("/api/post/:date", auth, async (req, res) => {
+    const postDate = req.params.date; 
 
-    if(date === undefined) throw new Error('Missing parameter `date`'); 
+    if(postDate === undefined) throw new Error('Missing parameter `date`'); 
 
     const postDateSplit = req.params.date.split("-"); 
 
-    if(postDateSplit.length !== 3) throw new Error('`Incorrect date format `date`: ' + date); 
+    if(postDateSplit.length !== 3) throw new Error('`Incorrect date format `date`: ' + postDate); 
 
-    //0=year, 1=day, 2=month
-    const postDate = new Date(postDateSplit[0], [1], [2]);
-
-    const post = await Post.findOne({ postDate });
-
-    res.send(post); 
+    const post = await Post.findOne({ postDate, isActive: true });
+    if(post) {
+        res.send(post); 
+    } else {
+        res.status(404).send("Could not find any active posts for date " + postDate); 
+    }
 });
+
+router.put("/api/post", auth, async(req, res) => {
+    try {
+        const post = await Post.findOneAndUpdate({_id: req.body.id}, {isActive: false});
+        
+        if(post.error) {
+            console.log("Error: " + post.error);
+            res.status(500).send({
+                error: post.error
+            });
+        } else {
+
+            if(!post.isActive) {
+                res.status(200).send({
+                    deactivated: req.body.id + " is already deactivated"
+                })
+            } else {
+                res.status(200).send({
+                    deactivated: req.body.id
+                }); 
+            }
+        }
+
+    } catch(err) {
+        res.status(500).send({
+            error: err
+        }); 
+    }
+})
 
 router.post("/api/post", async(req, res) => {
 
