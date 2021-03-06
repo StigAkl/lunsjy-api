@@ -3,6 +3,9 @@ let Post = require("./../entities/Post");
 const router = express.Router(); 
 const auth = require("./../middleware/auth"); 
 
+router.get("/", async (req, res) => {
+    res.status(200).send("We are live!"); 
+}); 
 
 router.get("/api/post/:date", auth, async (req, res) => {
     const postDate = req.params.date; 

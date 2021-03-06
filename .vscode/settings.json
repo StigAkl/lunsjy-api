@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/38e3057d-3924-4c6b-92d1-3652e47f3eeb/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/lunsjy-services",
+    "appService.deploySubpath": "."
+}
