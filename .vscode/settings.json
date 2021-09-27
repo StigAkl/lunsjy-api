@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/38e3057d-3924-4c6b-92d1-3652e47f3eeb/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/lunsjy-joke-api",
+    "appService.deploySubpath": "."
+}
