@@ -2,6 +2,7 @@ const express = require("express");
 let Joke = require("../entities/Joke"); 
 const router = express.Router(); 
 const auth = require("../middleware/auth"); 
+const rateLimiter = require('../middleware/rate-limiter'); 
 
 /*
     GET /api/joke -> Get next joke
@@ -117,6 +118,25 @@ router.get("/api/retrtoken", (req, res) => {
         token: process.env.RETRIEVE_TOKEN
     });
 });
+
+router.post("/api/auth", rateLimiter, async (req, res) => {
+    console.log("!?!?!?")
+    const secret = process.env.AUTH_SECRET; 
+    const reqSecret = req.body.secret; 
+
+    console.log(secret); 
+    console.log(reqSecret); 
+
+    if(secret === reqSecret) {
+        return res.status(200).send({
+            token: process.env.RETRIEVE_TOKEN
+        }); 
+    }
+
+    return res.status(401).send({
+        error: "Not authorized"
+    }); 
+})
 
 function formatDate(date) {
     var d = new Date(date),
