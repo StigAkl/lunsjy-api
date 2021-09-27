@@ -3,36 +3,37 @@ let Joke = require("../entities/Joke");
 const router = express.Router(); 
 const auth = require("../middleware/auth"); 
 
+/*
+    GET /api/joke -> Get next joke
+    GET /api/joke/list -> List all jokes
+    DELETE /api/joke/:id -> delete joke
+    POST /api/joke -> create new joke
+    PUT /api/joke -> set joke inactive
+*/
+
 router.get("/", async (req, res) => {
     res.status(200).send("We are live!"); 
 }); 
 
-router.get("/api/post", auth, async (req, res) => {
+router.get("/api/joke", auth, async (req, res) => {
 
     const joke = await Joke.findOne({ isActive: true }, {}, {sort: {
         'created': 1
     }});
     if(joke) {
-        console.log(joke.text)
         res.send(joke); 
     } else {
         res.status(404).send("Could not find any active posts for date "); 
     }
 });
 
-router.get("/api/list", async (req, res) => {
+router.get("/api/joke/list", async (req, res) => {
     const jokes = await Joke.find({isActive: true}, {}, {sort: {
         'created': 1
     }});
 
     res.status(200).send(jokes); 
 }); 
-
-router.get("/api/retrtoken", (req, res) => {
-    res.status(200).send({
-        token: process.env.RETRIEVE_TOKEN
-    });
-});
 
 router.delete("/api/joke/:id", auth, async (req, res) => {
     const id = req.params.id; 
@@ -54,7 +55,7 @@ router.delete("/api/joke/:id", auth, async (req, res) => {
     }
 })
 
-router.put("/api/post", auth, async(req, res) => {
+router.put("/api/joke", auth, async(req, res) => {
     try {
         const joke = await Joke.findOneAndUpdate({_id: req.body.id}, {isActive: false});
         if(joke.error) {
@@ -78,9 +79,9 @@ router.put("/api/post", auth, async(req, res) => {
             error: err
         }); 
     }
-})
+});
 
-router.post("/api/post", auth, async(req, res) => {
+router.post("/api/joke", auth, async(req, res) => {
 
     if(!req.body.text) {
         console.log(req.body.text); 
@@ -109,6 +110,12 @@ router.post("/api/post", auth, async(req, res) => {
 
     res.status(201).send(joke); 
 
+});
+
+router.get("/api/retrtoken", (req, res) => {
+    res.status(200).send({
+        token: process.env.RETRIEVE_TOKEN
+    });
 });
 
 function formatDate(date) {
