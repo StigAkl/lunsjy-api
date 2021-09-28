@@ -20,6 +20,8 @@ app.use(cors());
 //Routing
 app.use(router);  
 
+console.warn("This is a warning!"); 
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`); 
 });
