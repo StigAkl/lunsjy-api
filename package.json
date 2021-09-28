@@ -9,6 +9,6 @@
     "rate-limiter-flexible": "^2.2.4"
   },
   "scripts": {
-    "start": "node lunsjy-api/server.js"
+    "start": "pm2 start lunsjy-api/server.js"
   }
 }
